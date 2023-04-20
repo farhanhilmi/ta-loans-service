@@ -43,7 +43,7 @@ export const SubscribeMessage = async (channel, subscribeEvents) => {
         channel.bindQueue(
             q.queue,
             config.RABBITMQ.EXCHANGE_NAME,
-            config.RABBITMQ.CHANNEL.AUTH_SERVICE,
+            config.RABBITMQ.CHANNEL.LOAN,
         );
 
         channel.consume(
