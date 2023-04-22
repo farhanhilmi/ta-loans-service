@@ -6,8 +6,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { APP_NAME, MONGODB_URI, PORT, RABBITMQ_URL, EXCHANGE_NAME } =
-    process.env;
+const {
+    APP_NAME,
+    MONGODB_URI,
+    PORT,
+    RABBITMQ_URL,
+    EXCHANGE_NAME,
+    PROJECT_URL,
+} = process.env;
 
 const config = {
     app: {
@@ -27,6 +33,7 @@ const config = {
         },
         EXCHANGE_NAME,
     },
+    PROJECT_URL,
 };
 
 export default config;

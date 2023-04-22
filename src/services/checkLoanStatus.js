@@ -1,8 +1,6 @@
 import { ValidationError } from '../utils/errorHandler.js';
 import loansModels from '../database/models/loans.models.js';
 
-import { cachedData, isCached, setCache } from '../utils/redis.js';
-
 export default async (userId, idCard) => {
     try {
         // const DATATA = {
@@ -45,11 +43,11 @@ export default async (userId, idCard) => {
         // Render the retrieved items in a template
         // return { message: DATATA.message, status: DATATA.status };
 
-        const cachedItems = await isCached('userloan:' + userId);
-        if (cachedItems) {
-            console.log('MASUK KE CACHE');
-            return cachedItems;
-        }
+        // const cachedItems = await isCached('userloan:' + userId);
+        // if (cachedItems) {
+        //     console.log('MASUK KE CACHE');
+        //     return cachedItems;
+        // }
 
         const loans = await loansModels.find({ userId: userId });
         console.log('loans', loans);
@@ -71,9 +69,8 @@ export default async (userId, idCard) => {
                 status = 'OK';
             }
         }
-        console.log('MASUK DB');
         const result = { status, message: '' };
-        setCache('userloan:' + userId, result);
+        // setCache('userloan:' + userId, result);
         return result;
     } catch (error) {
         console.log('error at service', error);

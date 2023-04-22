@@ -1,3 +1,5 @@
+import config from '../config/index.js';
+
 export const formatData = (data) => {
     return data.map((item) => {
         return {
@@ -9,10 +11,50 @@ export const formatData = (data) => {
     });
 };
 
-export const responseData = (data = [], status = 'OK', message = 'success') => {
+export const responseData = (
+    data = [],
+    status = 'OK',
+    message = 'success',
+    meta = {},
+) => {
     return {
         status,
         message,
         data,
+        meta,
+    };
+};
+
+export const formatDataPagination = (
+    data,
+    page,
+    limit,
+    totalItems,
+    sort = null,
+    order = null,
+) => {
+    const URL = `${config.PROJECT_URL}/available`;
+    const isNextPage = totalItems > page * limit;
+    const isPreviousPage = page > 1;
+    const paginationURL = (pageNumber) => {
+        if (sort && order) {
+            return `${URL}?page=${pageNumber}&limit=${limit}&sort=${sort}&order=${order}`;
+        }
+        return `${URL}?page=${pageNumber}&limit=${limit}`;
+    };
+    return {
+        data,
+        meta: {
+            pagination: {
+                currentPage: page,
+                nextPage: isNextPage ? `${paginationURL(page + 1)}` : null,
+                previousPage: isPreviousPage
+                    ? `${paginationURL(page - 1)}`
+                    : null,
+                totalPages: Math.ceil(totalItems / limit),
+                limit,
+            },
+            totalItems,
+        },
     };
 };

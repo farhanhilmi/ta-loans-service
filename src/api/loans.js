@@ -4,6 +4,7 @@ import config from '../config/index.js';
 import { io } from '../server.js';
 import subscribeEvents from '../services/subscribeEvents.js';
 import checkLoanStatus from '../services/checkLoanStatus.js';
+import getAvailableLoans from '../services/getAvailableLoans.js';
 
 // import userServices from '../services/index.js';
 export class LoansController {
@@ -46,6 +47,24 @@ export class LoansController {
             const data = await checkLoanStatus(userId, idCard);
             // io.emit(`notification#${userId}`, data);
             res.status(200).json(data);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getAllAvailableLoans(req, res, next) {
+        try {
+            // const { page, limit, sort, order } = req.query;
+            const data = await getAvailableLoans(req.query);
+            // io.emit(`notification#${userId}`, data);
+            res.status(200).json(
+                responseData(
+                    data.data,
+                    'OK',
+                    'fetching all available loans success',
+                    data.meta,
+                ),
+            );
         } catch (error) {
             next(error);
         }

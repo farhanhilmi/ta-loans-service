@@ -6,6 +6,7 @@ const Routes = () => {
     const controller = new LoansController();
     router.get('/', controller.getExample.bind(controller));
     router.get('/check/:userId/:idCard', controller.loanCheck.bind(controller));
+    router.get('/available', controller.getAllAvailableLoans.bind(controller));
 
     return router;
 };
