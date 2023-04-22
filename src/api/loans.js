@@ -7,9 +7,9 @@ import checkLoanStatus from '../services/checkLoanStatus.js';
 
 // import userServices from '../services/index.js';
 export class LoansController {
-    constructor(channel) {
-        this.channel = channel;
-        SubscribeMessage(channel, subscribeEvents);
+    constructor() {
+        // this.channel = channel;
+        SubscribeMessage(subscribeEvents, 'Loan');
     }
 
     // CONTOH

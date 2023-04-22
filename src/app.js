@@ -3,7 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import Routes from './routes/index.js';
 
-export default async (channel) => {
+export default async () => {
     const app = express();
     app.use(cors({ origin: '*' }));
     app.use(express.json());
@@ -16,7 +16,7 @@ export default async (channel) => {
         return req.params[param];
     });
 
-    app.use(Routes(channel));
+    app.use(Routes());
 
     // API ENDPOINT NOT FOUND
     app.use((req, res, next) => {
