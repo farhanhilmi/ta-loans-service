@@ -4,14 +4,14 @@ import dbConnection from './database/connection.js';
 import config from './config/index.js';
 import expressApp from './app.js';
 // import { CreateChannel } from './utils/messageBroker.js';
-import createSocketServer from './socketio.js';
+// import createSocketServer from './socketio.js';
 // import errorHandler from './utils/error/index.js';
 
 // const channel = await CreateChannel();
 const app = await expressApp();
 const server = http.createServer(app);
-const io = createSocketServer(server);
-export { server, io };
+// const io = createSocketServer(server);
+export { server };
 // const startServer = async () => {
 //     try {
 //         // Moment().tz('Asia/Calcutta').format();

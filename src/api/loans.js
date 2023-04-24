@@ -1,7 +1,7 @@
 import { PublishMessage, SubscribeMessage } from '../utils/messageBroker.js';
 import { responseData } from '../utils/responses.js';
 import config from '../config/index.js';
-import { io } from '../server.js';
+// import { io } from '../server.js';
 import subscribeEvents from '../services/subscribeEvents.js';
 import checkLoanStatus from '../services/checkLoanStatus.js';
 import getAvailableLoans from '../services/getAvailableLoans.js';
@@ -33,7 +33,7 @@ export class LoansController {
                     'Your loan request successfully submitted to loan list',
             };
             const userId = 'diajdai1112';
-            io.emit(`notification#${userId}`, data);
+            // io.emit(`notification#${userId}`, data);
             res.status(200).json(responseData('', '', 'successss'));
         } catch (error) {
             next(error);

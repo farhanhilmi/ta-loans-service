@@ -28,18 +28,21 @@ const schema = new Schema(
     {
         userId: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: 'Users',
             required: true,
         },
         borrowerId: {
             type: Schema.Types.ObjectId,
-            ref: 'borrowers',
+            ref: 'Borrowers',
             required: true,
         },
         loanPurpose: {
             type: String,
         },
         amount: {
+            type: String,
+        },
+        description: {
             type: String,
         },
         tenor: {
@@ -58,5 +61,11 @@ const schema = new Schema(
         collection: 'loans',
     },
 );
+
+schema.virtual('user', {
+    ref: 'Users',
+    localField: 'userId',
+    foreignField: '_id',
+});
 
 export default mongoose.model('Loans', schema);

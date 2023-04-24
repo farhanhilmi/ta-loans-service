@@ -32,16 +32,21 @@ export const formatDataPagination = (
     totalItems,
     sort = null,
     order = null,
+    query = null,
 ) => {
     const URL = `${config.PROJECT_URL}/available`;
     const isNextPage = totalItems > page * limit;
     const isPreviousPage = page > 1;
+
     const paginationURL = (pageNumber) => {
+        query = query ? `&q=${query.trim().replace(/\s/g, '+')}` : '';
+        console.log('QUERY', query);
         if (sort && order) {
-            return `${URL}?page=${pageNumber}&limit=${limit}&sort=${sort}&order=${order}`;
+            return `${URL}?page=${pageNumber}&limit=${limit}&sort=${sort}&order=${order}${query}`;
         }
-        return `${URL}?page=${pageNumber}&limit=${limit}`;
+        return `${URL}?page=${pageNumber}&limit=${limit}${query}`;
     };
+
     return {
         data,
         meta: {

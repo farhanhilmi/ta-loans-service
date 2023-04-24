@@ -1,17 +1,52 @@
 import redis from 'redis-promisify';
 
-const redisClient = redis.createClient();
+const redisClient = () => {
+    try {
+        const client = redis.createClient();
+
+        client.on('error', (error) => {
+            console.error(`Redis error: ${error}`);
+            return new Error(error);
+            // Handle the error as appropriate for your application
+        });
+        return client;
+    } catch (error) {
+        console.log('ERROR REDIS', error);
+        throw error;
+    }
+};
 
 export const isCached = async (cacheKey) => {
-    const cachedItems = await redisClient.getAsync(cacheKey);
+    console.log('cacheKey', cacheKey);
+    const cachedItems = await redisClient().getAsync(cacheKey);
     if (cachedItems) return await JSON.parse(cachedItems);
     return false;
 };
 
+// isCached('userloan:');
+
 export const setCache = (cacheKey, data) => {
     try {
-        redisClient.setexAsync(cacheKey, 600, JSON.stringify(data)); // in seconds / expired in 10 menit
+        // 1 hour in seconds = 3600
+        redisClient().setexAsync(cacheKey, 3600 * 24, JSON.stringify(data)); // in seconds
         // return true;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteCache = (isBatch, keyPattern) => {
+    try {
+        if (!isBatch) {
+            redisClient().del(keyPattern);
+            return;
+        }
+        // delete matching keys with pattern
+        redisClient().keys(keyPattern, (err, key) => {
+            if (key.length === 0) return;
+            console.log('key', key);
+            redisClient().del(key);
+        });
     } catch (error) {
         throw error;
     }
