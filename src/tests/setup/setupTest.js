@@ -1,31 +1,72 @@
-import { jest } from '@jest/globals';
-import { when } from 'jest-when';
+// import { jest } from '@jest/globals';
+// import { when } from 'jest-when';
+import loansModels from '../../database/models/loans.models.js';
 import db from './db.js';
+import loansSeed from './seeds/loans.seed.js';
+import usersSeed from './seeds/users.seed.js';
 
 // import UsersModel from '../database/models/users.js';
 // import AuthService from '../services/auth.js';
 // import * as Utils from '../utils/mail/index.js';
 
-const resultData = [
+const loanMockData = [
     {
-        _id: '63edc92b7926224a7188b4ac',
-        name: 'Toni Kroos',
-        email: 'toni@gmail.com',
-        password: 'Jari$yaya',
-        salt: 'kfaj73ejfe',
-        verified: true,
-        roles: 'lender',
-        phoneNumber: '089283823',
+        _id: {
+            $oid: '6445ffa60cfd73ccc903960c',
+        },
+        userId: {
+            $oid: '6445fd1319df4e1b0146d8b8',
+        },
+        borrowerId: {
+            $oid: '6445fd282b6e235e87b2a080',
+        },
+        loanPurpose: 'Lahiran',
+        amount: '8500000',
+        tenor: 3,
+        interestRate: '250000',
+        status: 'on request',
+        createdDate: {
+            $date: {
+                $numberLong: '1682309030199',
+            },
+        },
+        modifyDate: {
+            $date: {
+                $numberLong: '1682309030199',
+            },
+        },
+        __v: 0,
     },
+];
+
+const userMockData = [
     {
-        _id: '63edc92b7926224a7188b4ab',
-        name: 'Luka Modric',
-        email: 'modric@gmail.com',
-        password: 'Jari$yaya',
-        salt: 'fsf3434hafa',
+        _id: {
+            $oid: '6445fd1319df4e1b0146d8b8',
+        },
+        name: 'isco',
+        email: 'isco@yopmail.com',
+        phoneNumber: 6285333602646,
+        password:
+            'bzAhkoUoDtenJPqph0tpPw==.dnbYyJOFNBtHYDQDYqJwW8zv1NY1gqCYog3lx4S5E56wgIIlH6YrQwNgJjuWEYozVQUWKJ8oC3eZTlJrxTSC2A==',
+        salt: 'bzAhkoUoDtenJPqph0tpPw==',
         verified: true,
         roles: 'borrower',
-        phoneNumber: '089283822',
+        birthDate: 'false',
+        idCardNumber: 0,
+        idCardImage: 'false',
+        faceImage: 'false',
+        createdDate: {
+            $date: {
+                $numberLong: '1682308371168',
+            },
+        },
+        modifyDate: {
+            $date: {
+                $numberLong: '1682308391600',
+            },
+        },
+        __v: 0,
     },
 ];
 
@@ -67,7 +108,13 @@ beforeAll(async () => {
     //     otpExpired: '2020-10-10',
     // });
     // jest.setTimeout(60000);
-    // await db.connect();
+    await db.connect();
+    const DB = await db.getDB();
+    await DB.collection('users').insertMany(usersSeed);
+    await DB.collection('loans').insertMany(loansSeed);
+    // const loanss = await DB.collection('users').find({}).toArray();
+    // console.log('DB', loanss);
+    // console.log('DB', await DB.collection('users').find({}).toArray());
 });
 
 beforeEach(async () => {
@@ -80,9 +127,10 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-    await db.clear();
+    // await db.clear();
 });
 
 afterAll(async () => {
+    await db.clear();
     await db.close();
 });

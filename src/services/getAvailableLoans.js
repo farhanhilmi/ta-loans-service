@@ -1,6 +1,5 @@
 import loansModels from '../database/models/loans.models.js';
-import usersModels from '../database/models/users.models.js';
-import { LoanRepository } from '../database/repository/loans.repo.js';
+import LoanRepository from '../database/repository/loans.repo.js';
 import { isCached, setCache } from '../utils/redis.js';
 import { formatDataPagination } from '../utils/responses.js';
 
@@ -124,6 +123,7 @@ export default async (payload) => {
                 $or: [{ status: 'on request' }, { status: 'on process' }],
             }),
         ]);
+        console.log('loans', loans);
 
         console.log('MASUK DB');
         setCache(cacheKey, { loans, totalItems });

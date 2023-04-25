@@ -1,18 +1,22 @@
 import loansModels from '../models/loans.models.js';
 
-export class LoanRepository {
+export default class LoanRepository {
     constructor() {
         this.model = loansModels;
     }
 
-    filterAvailableLoans = async (
+    // function kajaj() {
+
+    // }
+
+    async filterAvailableLoans(
         matchQuery,
         excludeUserFields = [],
         page = 1,
         limit = 10,
         sort = 'createdDate',
         order = 'desc',
-    ) => {
+    ) {
         try {
             let fields = {
                 modifyDate: 0,
@@ -76,15 +80,15 @@ export class LoanRepository {
         } catch (error) {
             throw error;
         }
-    };
+    }
 
-    lookupFind = async (
+    async lookupFind(
         query,
         page = 1,
         limit = 10,
         sort = 'createdDate',
         order = 'desc',
-    ) => {
+    ) {
         try {
             const statusMatchQuery = [
                 { status: 'on request' },
@@ -142,5 +146,5 @@ export class LoanRepository {
         } catch (error) {
             throw error;
         }
-    };
+    }
 }
