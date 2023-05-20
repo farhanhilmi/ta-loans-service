@@ -14,6 +14,7 @@ export default async (payload) => {
             interestRate: payload.loanApplication.interestRate,
             description: payload.loanApplication.description,
             repaymentSource: payload.loanApplication.repaymentSource,
+            borrowingCategory: payload.loanApplication.borrowingCategory,
         };
 
         const loan = await loansModels.create(data);
@@ -37,6 +38,6 @@ export default async (payload) => {
         return true;
     } catch (error) {
         console.log('error at service', error);
-        return new Error(error);
+        throw error;
     }
 };

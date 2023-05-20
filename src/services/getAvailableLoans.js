@@ -54,7 +54,7 @@ export default async (payload) => {
             ]);
 
             console.log('MASUK DB');
-            setCache(cacheKey, { loans, totalItems });
+            // setCache(cacheKey, { loans, totalItems });
 
             return formatDataPagination(
                 loans,
@@ -126,7 +126,7 @@ export default async (payload) => {
         console.log('loans', loans);
 
         console.log('MASUK DB');
-        setCache(cacheKey, { loans, totalItems });
+        // setCache(cacheKey, { loans, totalItems });
 
         return formatDataPagination(
             loans,

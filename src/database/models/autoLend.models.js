@@ -31,37 +31,30 @@ const schema = new Schema(
             ref: 'Users',
             required: true,
         },
-        borrowerId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Borrowers',
-            required: true,
+        cancelTime: {
+            type: Date,
+            default: null,
         },
-        loanPurpose: {
-            type: String,
-        },
-        amount: {
-            type: Number,
-        },
-        description: {
-            type: String,
-        },
-        tenor: {
-            type: Number,
+        tenorLength: {
+            type: Object,
+            default: null,
         },
         borrowingCategory: {
-            type: String,
+            type: Array,
+            default: null,
         },
-        interestRate: {
+        yieldRange: {
+            type: Object,
+            default: null,
+        },
+        status: {
             type: Number,
+            default: null,
         },
-        repaymentSource: {
-            type: String,
-        },
-        status: statusOptions,
     },
     {
         timestamps: { createdAt: 'createdDate', updatedAt: 'modifyDate' },
-        collection: 'loans',
+        collection: 'auto_lend',
     },
 );
 
@@ -71,4 +64,4 @@ schema.virtual('user', {
     foreignField: '_id',
 });
 
-export default mongoose.model('Loans', schema);
+export default mongoose.model('AutoLend', schema);

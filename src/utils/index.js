@@ -1,3 +1,13 @@
+import moment from 'moment-timezone';
+
+export const getCurrentJakartaTime = () => {
+    return moment.tz(Date.now(), 'Asia/Jakarta');
+};
+
+export const formatToJakartaTime = (datetime) => {
+    return moment.tz(new Date(datetime), 'Asia/Jakarta');
+};
+
 export const toTitleCase = (str) => {
     return str
         .split(' ')

@@ -27,48 +27,42 @@ const Schema = mongoose.Schema;
 const schema = new Schema(
     {
         userId: {
+            // lender
             type: Schema.Types.ObjectId,
             ref: 'Users',
             required: true,
         },
-        borrowerId: {
+        lenderId: {
+            // lender
             type: Schema.Types.ObjectId,
-            ref: 'Borrowers',
+            ref: 'Lenders',
             required: true,
         },
-        loanPurpose: {
-            type: String,
+        loanId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Loans',
+            required: true,
         },
         amount: {
             type: Number,
         },
-        description: {
-            type: String,
-        },
-        tenor: {
+        yield: {
             type: Number,
         },
-        borrowingCategory: {
+        status: {
             type: String,
         },
-        interestRate: {
-            type: Number,
-        },
-        repaymentSource: {
-            type: String,
-        },
-        status: statusOptions,
     },
     {
         timestamps: { createdAt: 'createdDate', updatedAt: 'modifyDate' },
-        collection: 'loans',
+        collection: 'fundings',
     },
 );
 
-schema.virtual('user', {
-    ref: 'Users',
-    localField: 'userId',
+schema.virtual('loan', {
+    ref: 'Loans',
+    localField: 'loanId',
     foreignField: '_id',
 });
 
-export default mongoose.model('Loans', schema);
+export default mongoose.model('Fundings', schema);

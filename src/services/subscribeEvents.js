@@ -1,3 +1,4 @@
+import createAutoLend from './createAutoLend.js';
 import requestLoan from './requestLoan.js';
 
 export default (payload) => {
@@ -16,6 +17,10 @@ export default (payload) => {
             case 'LOAN_REQUEST':
                 requestLoan(data);
                 break;
+            case 'CREATE_AUTO_LEND':
+                console.log('MASUKK');
+                createAutoLend(data);
+                break;
             // case 'ADD_TO_CART':
             //     this.ManageCart(userId, product, qty, false);
             //     break;
@@ -30,6 +35,6 @@ export default (payload) => {
                 break;
         }
     } catch (error) {
-        return new Error(error);
+        throw error;
     }
 };
