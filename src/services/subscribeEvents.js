@@ -1,5 +1,7 @@
-import createAutoLend from './createAutoLend.js';
-import requestLoan from './requestLoan.js';
+import FundingService from './funding.service.js';
+import LoanService from './loan.service.js';
+// import createAutoLend from './createAutoLend.js';
+// import requestLoan from './requestLoan.js';
 
 export default (payload) => {
     try {
@@ -10,16 +12,20 @@ export default (payload) => {
 
         const { event, data } = payload;
 
-        // const { userId, roles, order, qty } = data;
+        // const { userId, roles} = data;
 
         switch (event) {
             // case 'ADD_TO_WISHLIST':
             case 'LOAN_REQUEST':
-                requestLoan(data);
+                const loanService = new LoanService();
+                loanService.createLoan(data);
+                // requestLoan(data);
                 break;
             case 'CREATE_AUTO_LEND':
+                const fundingService = new FundingService();
                 console.log('MASUKK');
-                createAutoLend(data);
+                fundingService.createAutoLend(data);
+                // createAutoLend(data);
                 break;
             // case 'ADD_TO_CART':
             //     this.ManageCart(userId, product, qty, false);

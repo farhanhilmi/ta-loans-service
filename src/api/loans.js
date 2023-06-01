@@ -1,8 +1,6 @@
-import { PublishMessage, SubscribeMessage } from '../utils/messageBroker.js';
 import { responseData } from '../utils/responses.js';
 import config from '../config/index.js';
 // import { io } from '../server.js';
-import subscribeEvents from '../services/subscribeEvents.js';
 import checkLoanStatus from '../services/checkLoanStatus.js';
 import getAvailableLoans from '../services/getAvailableLoans.js';
 
@@ -10,7 +8,7 @@ import getAvailableLoans from '../services/getAvailableLoans.js';
 export class LoansController {
     constructor() {
         // this.channel = channel;
-        SubscribeMessage(subscribeEvents, 'Loan');
+        // SubscribeMessage(subscribeEvents, 'Loan');
     }
 
     // CONTOH

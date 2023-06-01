@@ -1,10 +1,15 @@
 import dotenv from 'dotenv';
+import path, { join } from 'path';
 
-// dotenv.config({
-//     path: path.resolve(__dirname, process.env.NODE_ENV + '.env')
-//   });
+const NODE_ENV = process.env.NODE_ENV;
+const env = `${NODE_ENV}.env`;
+console.log('current env:', env);
 
-dotenv.config();
+const basedir = path.resolve(process.cwd());
+// const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({
+    path: join(basedir, `${NODE_ENV}.env`),
+});
 
 const {
     APP_NAME,

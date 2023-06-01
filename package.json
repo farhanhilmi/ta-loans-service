@@ -15,9 +15,9 @@
     },
     "scripts": {
         "test": "jest --coverage --detectOpenHandles",
-        "start": "node ./src/startServer.js",
-        "dev": "set NODE_ENV=development && nodemon ./src/startServer.js",
-        "gcp-change": "gcloud config set project loans-service-p2p",
+        "start": "set NODE_ENV=production&& node ./src/startServer.js",
+        "dev": "set NODE_ENV=development&& nodemon ./src/startServer.js",
+        "gcp-change": "gcloud config set project ta-loan-service",
         "deploy": "gcloud app deploy"
     },
     "keywords": [],

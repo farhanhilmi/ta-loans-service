@@ -36,25 +36,23 @@ const schema = new Schema(
             ref: 'Borrowers',
             required: true,
         },
-        loanPurpose: {
+        purpose: {
             type: String,
         },
         amount: {
             type: Number,
         },
-        description: {
-            type: String,
-        },
+
         tenor: {
             type: Number,
         },
         borrowingCategory: {
             type: String,
         },
-        interestRate: {
+        yieldReturn: {
             type: Number,
         },
-        repaymentSource: {
+        paymentSchema: {
             type: String,
         },
         status: statusOptions,

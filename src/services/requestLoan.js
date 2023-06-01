@@ -1,6 +1,6 @@
 import loansModels from '../database/models/loans.models.js';
-import { PublishMessage } from '../utils/messageBroker.js';
-import { deleteCache } from '../utils/redis.js';
+// import { PublishMessage } from '../utils/messageBroker.js';
+// import { deleteCache } from '../utils/redis.js';
 // import { io } from '../server.js';
 
 export default async (payload) => {
@@ -8,24 +8,23 @@ export default async (payload) => {
         const data = {
             userId: payload.user.userId,
             borrowerId: payload.user.borrowerId,
-            loanPurpose: payload.loanApplication.loanPurpose,
+            purpose: payload.loanApplication.purpose,
             amount: payload.loanApplication.amount,
             tenor: payload.loanApplication.tenor,
-            interestRate: payload.loanApplication.interestRate,
-            description: payload.loanApplication.description,
-            repaymentSource: payload.loanApplication.repaymentSource,
+            yieldReturn: payload.loanApplication.yieldReturn,
+            paymentSchema: payload.loanApplication.paymentSchema,
             borrowingCategory: payload.loanApplication.borrowingCategory,
         };
 
         const loan = await loansModels.create(data);
-        const messageData = {
-            userId: payload.user.userId,
-            status: 'on request',
-        };
+        // const messageData = {
+        //     userId: payload.user.userId,
+        //     status: 'on request',
+        // };
         console.log('new loan', loan);
 
-        deleteCache(true, 'availableLoans-*');
-        PublishMessage(messageData, 'UPDATE_BORROWER_STATUS', 'Borrower');
+        // deleteCache(true, 'availableLoans-*');
+        // PublishMessage(messageData, 'UPDATE_BORROWER_STATUS', 'Borrower');
 
         const notifMessage = {
             event: 'LOAN_REQUEST',
