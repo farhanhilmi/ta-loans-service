@@ -1,4 +1,9 @@
 import moment from 'moment-timezone';
+import mongoose from 'mongoose';
+
+export const toObjectId = (id) => {
+    return new mongoose.Types.ObjectId(id);
+};
 
 export const getCurrentJakartaTime = () => {
     return moment.tz(Date.now(), 'Asia/Jakarta');

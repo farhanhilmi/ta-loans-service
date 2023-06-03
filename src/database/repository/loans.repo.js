@@ -1,3 +1,4 @@
+import { toObjectId } from '../../utils/index.js';
 import loansModels from '../models/loans.models.js';
 
 export default class LoanRepository {
@@ -126,6 +127,9 @@ export default class LoanRepository {
         order = 'desc',
     ) {
         try {
+            if (query['$and'].length < 1) {
+                query = [];
+            }
             const statusMatchQuery = [
                 { status: 'on request' },
                 { status: 'on process' },
@@ -215,6 +219,127 @@ export default class LoanRepository {
                     },
                 ])
                 .exec();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async findLoanById(loanId) {
+        try {
+            const loan = await this.model
+                .aggregate([
+                    {
+                        $match: { _id: toObjectId(loanId) },
+                    },
+                    {
+                        $lookup: {
+                            from: 'borrowers',
+                            localField: 'borrowerId',
+                            foreignField: '_id',
+                            as: 'borrower',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'user',
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: 'fundings',
+                            localField: '_id',
+                            foreignField: 'loanId',
+                            as: 'funding',
+                        },
+                    },
+                    {
+                        // remove array from result only return object
+                        $unwind: '$borrower',
+                    },
+                    {
+                        // remove array from result only return object
+                        $unwind: '$user',
+                    },
+                    // {
+                    //     $let: {
+                    //         vars: {
+                    //             borrowedFund: {
+                    //                 $toInt: {
+                    //                     $sum: '$amount',
+                    //                 },
+                    //             },
+                    //         },
+                    //         in: {
+                    //             $addFields: {
+                    //                 loanId: '$_id',
+                    //             }
+                    //     },
+                    // },
+                    {
+                        $addFields: {
+                            loanId: '$_id',
+                            contract: 'blabladada',
+                            risk: '500',
+                            'borrower.name': '$user.name',
+                            'borrower.borrowerId': '$borrower._id',
+                            'borrower.email': '$user.email',
+                            // 'borrower.borrowerId': '$borrower._id',
+                            'borrower.creditScore': '500',
+                            // subtract amount loan with amount funding
+                            totalFunding: {
+                                // check if funding is empty array, return 0, else return total funding
+                                $cond: {
+                                    if: { $eq: ['$funding', []] },
+                                    then: 0,
+                                    else: {
+                                        $toInt: {
+                                            $sum: '$funding.amount',
+                                        },
+                                        // $subtract: [
+                                        //     {
+                                        //         $toInt: '$amount',
+                                        //     },
+                                        //     {
+                                        //         $toInt: {
+                                        //             $sum: '$funding.amount',
+                                        //         },
+                                        //     },
+                                        // ],
+                                    },
+                                },
+                            },
+                        },
+                    },
+
+                    {
+                        $project: {
+                            modifyDate: 0,
+                            borrowerId: 0,
+                            __v: 0,
+                            funding: 0,
+                            _id: 0,
+                            user: 0,
+                            userId: 0,
+                            'borrower._id': 0,
+                            'borrower.userId': 0,
+                            'borrower.__v': 0,
+                            'borrower.income': 0,
+                            'borrower.status': 0,
+                            'borrower.loanLimit': 0,
+                            'borrower.createdDate': 0,
+                            'borrower.modifyDate': 0,
+                        },
+                    },
+                    {
+                        $limit: 1,
+                    },
+                ])
+                .exec();
+
+            return loan[0];
         } catch (error) {
             throw error;
         }

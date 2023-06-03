@@ -2,13 +2,14 @@ import { responseData } from '../utils/responses.js';
 import config from '../config/index.js';
 // import { io } from '../server.js';
 import checkLoanStatus from '../services/checkLoanStatus.js';
-import getAvailableLoans from '../services/getAvailableLoans.js';
+import LoanService from '../services/loan.service.js';
 
 // import userServices from '../services/index.js';
 export class LoansController {
     constructor() {
         // this.channel = channel;
         // SubscribeMessage(subscribeEvents, 'Loan');
+        this.loanService = new LoanService();
     }
 
     // CONTOH
@@ -53,7 +54,7 @@ export class LoansController {
     async getAllAvailableLoans(req, res, next) {
         try {
             // const { page, limit, sort, order } = req.query;
-            const data = await getAvailableLoans(req.query);
+            const data = await this.loanService.showAvailableLoans(req.query);
             // io.emit(`notification#${userId}`, data);
             res.status(200).json(
                 responseData(
@@ -62,6 +63,21 @@ export class LoansController {
                     'fetching all available loans success',
                     data.meta,
                 ),
+            );
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getLoanById(req, res, next) {
+        try {
+            // const { page, limit, sort, order } = req.query;
+            const data = await this.loanService.getLoanDetails(
+                req.params.loanId,
+            );
+            // io.emit(`notification#${userId}`, data);
+            res.status(200).json(
+                responseData(data, 'OK', 'fetching loan details success', {}),
             );
         } catch (error) {
             next(error);
