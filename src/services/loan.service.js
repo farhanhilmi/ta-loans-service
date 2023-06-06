@@ -4,6 +4,14 @@ import loansModels from '../database/models/loans.models.js';
 import LoanRepository from '../database/repository/loans.repo.js';
 import { formatDataPagination } from '../utils/responses.js';
 import { NotFoundError, ValidationError } from '../utils/errorHandler.js';
+import borrowerContract from '../database/models/BorrowerContract.models.js';
+import {
+    generateContractPDF,
+    generateQrImage,
+    generateSignature,
+} from '../utils/signature.js';
+import conn from '../database/connection.js';
+import { toObjectId } from '../utils/index.js';
 
 class LoanService {
     constructor() {
@@ -11,6 +19,7 @@ class LoanService {
         this.fundingModel = fundingModel;
         this.autoLend = autoLend;
         this.loansModels = loansModels;
+        this.borrowerContract = borrowerContract;
     }
 
     async createLoan(payload) {
@@ -26,16 +35,49 @@ class LoanService {
                 borrowingCategory: payload.loanApplication.borrowingCategory,
             };
 
-            const loan = await this.loansModels.create(data);
+            const [loan, borrower] = await Promise.allSettled([
+                await this.loansModels.create(data),
+                await conn
+                    .collection('users')
+                    .findOne({ _id: toObjectId(data.userId) }),
+            ]);
 
-            console.log('new loan', loan);
+            console.log('new loan', loan.value);
 
+            const signatureKey = generateSignature({
+                loanId: loan.value._id.toString(),
+                borrowerId: data.borrowerId.toString(),
+            });
+
+            const qrData =
+                'https://www.google.com/search?q=ini+isi+halaman+validasi+contract.&oq=ini+isi+halaman+validasi+contract.&aqs=edge..69i57.30981j0j1&sourceid=chrome&ie=UTF-8';
+            const qrImage = await generateQrImage(qrData);
+            const pdfLink = await generateContractPDF({
+                borrowerName: borrower.value.name,
+                // borrowerAddress: borrower.address,
+                borrowerEmail: borrower.value.email,
+                borrowerPhone: borrower.value.phoneNumber,
+                loanYield: data.yieldReturn,
+                loanAmount: data.amount,
+                loanTenor: data.tenor,
+                paymentSchema: data.paymentSchema,
+                qrImage,
+            });
+
+            // await loan.updateOne({ contractLink: pdfLink }).exec();
+            // loan.save();
+            await this.borrowerContract.create({
+                borrowerId: data.borrowerId,
+                loanId: loan.value._id,
+                signatureKey,
+                contractLink: pdfLink,
+            });
             // deleteCache(true, 'availableLoans-*');
             // PublishMessage(messageData, 'UPDATE_BORROWER_STATUS', 'Borrower');
 
             const notifMessage = {
                 event: 'LOAN_REQUEST',
-                data: { userId: payload.user.userId, loanId: loan._id },
+                data: { userId: payload.user.userId, loanId: loan.value._id },
                 message:
                     'Your loan request has been successfully displayed and lenders can view your loan.',
             };
@@ -132,6 +174,7 @@ class LoanService {
                     ],
                 }),
             ]);
+            // console.log('loans', loans);
 
             return formatDataPagination(
                 loans,

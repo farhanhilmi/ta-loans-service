@@ -55,6 +55,10 @@ const schema = new Schema(
         paymentSchema: {
             type: String,
         },
+        // contractLink: {
+        //     type: String,
+        //     default: null,
+        // },
         status: statusOptions,
     },
     {

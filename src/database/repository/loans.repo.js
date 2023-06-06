@@ -158,8 +158,15 @@ export default class LoanRepository {
                             as: 'funding',
                         },
                     },
+
+                    {
+                        // remove array from result only return object
+                        $unwind: '$borrower',
+                    },
                     {
                         $addFields: {
+                            'borrower.borrowerId': '$borrower._id',
+                            loanId: '$_id',
                             // subtract amount loan with amount funding
                             totalFunding: {
                                 // check if funding is empty array, return 0, else return total funding
@@ -186,15 +193,12 @@ export default class LoanRepository {
                         },
                     },
                     {
-                        // remove array from result only return object
-                        $unwind: '$borrower',
-                    },
-                    {
                         $project: {
                             modifyDate: 0,
                             borrowerId: 0,
                             __v: 0,
                             funding: 0,
+                            _id: 0,
                             'borrower._id': 0,
                             'borrower.__v': 0,
                             'borrower.password': 0,
@@ -206,6 +210,9 @@ export default class LoanRepository {
                             'borrower.modifyDate': 0,
                             'borrower.verified': 0,
                             'borrower.roles': 0,
+                            'borrower.phoneNumber': 0,
+                            'borrower.gender': 0,
+                            'borrower.faceImage': 0,
                         },
                     },
                     {
@@ -256,8 +263,20 @@ export default class LoanRepository {
                         },
                     },
                     {
+                        $lookup: {
+                            from: 'borrower_contracts',
+                            localField: '_id',
+                            foreignField: 'loanId',
+                            as: 'borrower_contracts',
+                        },
+                    },
+                    {
                         // remove array from result only return object
                         $unwind: '$borrower',
+                    },
+                    {
+                        // remove array from result only return object
+                        $unwind: '$borrower_contracts',
                     },
                     {
                         // remove array from result only return object
@@ -281,7 +300,9 @@ export default class LoanRepository {
                     {
                         $addFields: {
                             loanId: '$_id',
-                            contract: 'blabladada',
+                            // 'contract.borrower':
+                            //     '$borrower_contracts.contractLink',
+                            contract: '$borrower_contracts.contractLink',
                             risk: '500',
                             'borrower.name': '$user.name',
                             'borrower.borrowerId': '$borrower._id',
@@ -323,6 +344,7 @@ export default class LoanRepository {
                             _id: 0,
                             user: 0,
                             userId: 0,
+                            borrower_contracts: 0,
                             'borrower._id': 0,
                             'borrower.userId': 0,
                             'borrower.__v': 0,
